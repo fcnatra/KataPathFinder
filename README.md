@@ -22,7 +22,6 @@ Walls are marked **W**
 
 Start and exit positions are empty in all test cases
 
-
 ### Task #2 Shortest path
 
 Type of practice: **PUZZLES**
@@ -35,7 +34,6 @@ Walls are marked **W**
 
 Start and exit positions are guaranteed to be empty in all test cases.
 
-
 ### Task #3 The Alpinist:
 
 Type of practice: **ALGORITHMS**
@@ -44,13 +42,11 @@ You are at start location [0, 0] in mountain area of NxN and you can only move i
 
 Location altitude is defined as an integer number (0-9).
 
-
 ### Task #4 Where are you?
 
 Type of practice: **PUZZLES**
 
 Hey, Path Finder, where are you?
-
 
 ### Task #5 There's someone here
 
