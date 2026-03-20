@@ -49,4 +49,17 @@ public class TaskNumber1Tests
 
         Assert.False(Finder.PathFinder(area));
     }
+
+    [Fact]
+    public void PathFinder_ReturnsTrue_WhenPathToExitRequiresToGoBack()
+    {
+        string area = "..W...\n" +
+                      ".W....\n" +
+                      "......\n" +
+                      "......\n" +
+                      "......\n" +
+                      "......";
+
+        Assert.True(Finder.PathFinder(area));
+    }
 }
