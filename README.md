@@ -16,9 +16,11 @@ Type of practice: **ALGORITHMS**
 
 You are at position [0, 0] in maze NxN and you can only move in one of the four cardinal directions (i.e. North, East, South, West). Return true if you can reach position [N-1, N-1] or false otherwise.
 
-Empty positions are marked ..
-Walls are marked W.
-Start and exit positions are empty in all test cases.
+Empty positions are marked **.**
+
+Walls are marked **W**
+
+Start and exit positions are empty in all test cases
 
 
 ### Task #2 Shortest path
@@ -27,7 +29,11 @@ Type of practice: **PUZZLES**
 
 You are at position [0, 0] in maze NxN and you can only move in one of the four cardinal directions (i.e. North, East, South, West). Return the minimal number of steps to exit position [N-1, N-1] if it is possible to reach the exit from the starting position. Otherwise, return -1.
 
-Empty positions are marked .. Walls are marked W. Start and exit positions are guaranteed to be empty in all test cases.
+Empty positions are marked **.**
+
+Walls are marked **W**
+
+Start and exit positions are guaranteed to be empty in all test cases.
 
 
 ### Task #3 The Alpinist:
@@ -38,11 +44,13 @@ You are at start location [0, 0] in mountain area of NxN and you can only move i
 
 Location altitude is defined as an integer number (0-9).
 
+
 ### Task #4 Where are you?
 
 Type of practice: **PUZZLES**
 
 Hey, Path Finder, where are you?
+
 
 ### Task #5 There's someone here
 
@@ -52,6 +60,10 @@ You are at position [0, 0] in maze NxN and you can only move in one of the four 
 
 It's really hard to solve in general, so in this task the maze have only one position with wall.
 
-Empty positions are marked .. Wall is marked W. All border positions are guaranteed to be empty in all test cases. And yes, wall is close enough to escape without meeting a monster.
+Empty positions are marked **.**
+
+Walls are marked **W**
+
+All border positions are guaranteed to be empty in all test cases. And yes, wall is close enough to escape without meeting a monster.
 
 Every time you are ready to make a move, call the function endTurn(way) where way parameter equal one of 'N', 'E', 'S' or 'W'. endTurn() returns monster's move.
