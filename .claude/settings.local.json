@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/frank.torres/.claude/plugins/marketplaces/nwave-marketplace/plugins/nw//**)",
+      "Read(//c/Users/frank.torres/.claude/plugins/marketplaces/claude-plugins-official//**)",
+      "Read(//c/Users/frank.torres/.claude/plugins//**)",
+      "Bash(dotnet test:*)"
+    ]
+  }
+}

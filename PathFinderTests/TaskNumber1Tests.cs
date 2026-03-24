@@ -25,7 +25,7 @@ public class TaskNumber1Tests
     }
 
     [Fact]
-    public void PathFinder_ReturnsTrue_WhenOpenGridHasRoute()
+    public void PathFinder_ReturnsTrue_WhenOpenGridHasNoWalls()
     {
         string area = "......\n" +
                       "......\n" +
@@ -51,7 +51,7 @@ public class TaskNumber1Tests
     }
 
     [Fact]
-    public void PathFinder_ReturnsTrue_WhenPathToExitRequiresToGoBack()
+    public void PathFinder_ReturnsTrue_WhenPathToExitRequiresToGoBackOnPath()
     {
         string area = "..W...\n" +
                       ".W....\n" +
@@ -59,6 +59,30 @@ public class TaskNumber1Tests
                       "......\n" +
                       "......\n" +
                       "......";
+
+        Assert.True(Finder.PathFinder(area));
+    }
+
+    [Fact]
+    public void PathFinder_ReturnsTrue_WhenPathRequiresGoingNorth()
+    {
+        string area = ".W...\n" +
+                      ".W...\n" +
+                      ".W.W.\n" +
+                      "...W.\n" +
+                      "...W.";
+
+        Assert.True(Finder.PathFinder(area));
+    }
+
+    [Fact]
+    public void PathFinder_ReturnsTrue_WhenPathRequiresGoingWest()
+    {
+        string area = "..W\n" +
+                      "W.W\n" +
+                      "..W\n" +
+                      ".WW\n" +
+                      "...";
 
         Assert.True(Finder.PathFinder(area));
     }

@@ -1,63 +1,34 @@
-﻿using System.Diagnostics.Contracts;
-using System.Drawing;
-
 namespace TaskNumber1;
 
 public class Finder
 {
     public static bool PathFinder(string maze)
     {
-        string[] rows = maze.Split('\n');
-        var position = new Point(0, 0);
-        var limits = new Point(rows[0].Length - 1, rows.Length - 1);
-        var visitedPath = new List<Point> { new Point(-1, -1) };
-        
-        while (InsideLimits(position, limits))
+        var grid = new MazeGrid(maze);
+        var walk = new WalkState(grid.Start);
+
+        while (!walk.HasReached(grid.Exit) && !walk.IsLost)
         {
-            if (CanGoRight(position, rows, limits))
-            {
-                position.X++;
-                visitedPath.Add(position);
-                continue;
-            }
-            
-            if (CanGoDown(position, rows, limits))
-            {
-                position.Y++;
-                visitedPath.Add(position);
-                continue;
-            }
+            if (TryStep(ref walk, grid, dx: 1, dy: 0)) continue;
+            if (TryStep(ref walk, grid, dx: 0, dy: 1)) continue;
+            if (TryStep(ref walk, grid, dx: 0, dy: -1)) continue;
+            if (TryStep(ref walk, grid, dx: -1, dy: 0)) continue;
 
-            BlockThisPath(position, rows);
-            position = GoBack(visitedPath);
+            grid.MarkDeadEnd(walk.Position);
+            walk.Backtrack();
         }
-        return position == limits;
+
+        return walk.Position == grid.Exit;
     }
 
-    private static void BlockThisPath(Point position, string[] rows)
+    private static bool TryStep(ref WalkState walk, MazeGrid grid, int dx, int dy)
     {
-        rows[position.Y] = rows[position.Y].Remove(position.X, 1).Insert(position.X, "W");
-    }
+        var candidate = new GridPoint(walk.Position.Col + dx, walk.Position.Row + dy);
 
-    private static Point GoBack(List<Point> visitedPath)
-    {
-        var previousPosition = visitedPath.Last();
-        visitedPath.RemoveAt(visitedPath.Count - 1);
-        return previousPosition;
-    }
+        if (!grid.IsOpen(candidate)) return false;
+        if (walk.AlreadyVisited(candidate)) return false;
 
-    private static bool InsideLimits(Point position, Point limits)
-    {
-        return (position.X >= 0 && position.X < limits.X) || (position.Y >= 0 && position.Y < limits.Y);
-    }
-
-    private static bool CanGoRight(Point position, string[] rows, Point limits)
-    {
-        return position.X < limits.X && rows[position.Y][position.X + 1] == '.';
-    }
-
-    private static bool CanGoDown(Point position, string[] rows, Point limits)
-    {
-        return position.Y < limits.Y && rows[position.Y + 1][position.X] == '.';
+        walk.MoveTo(candidate);
+        return true;
     }
 }
