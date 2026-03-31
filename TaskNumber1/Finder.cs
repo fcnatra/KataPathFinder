@@ -1,38 +1,34 @@
-﻿namespace TaskNumber1;
+namespace TaskNumber1;
 
 public class Finder
 {
-    private static readonly (int dx, int dy)[] Directions = [(1, 0), (0, 1), (-1, 0), (0, -1)];
-
     public static bool PathFinder(string maze)
     {
-        string[] rows = maze.Split('\n');
-        int height = rows.Length;
-        int width = rows[0].Length;
-        var visited = new bool[width, height];
-        var queue = new Queue<(int x, int y)>();
+        var grid = new MazeGrid(maze);
+        var walk = new WalkState(grid.Start);
 
-        queue.Enqueue((0, 0));
-        visited[0, 0] = true;
-
-        while (queue.Count > 0)
+        while (!walk.HasReached(grid.Exit) && !walk.IsLost)
         {
-            var (x, y) = queue.Dequeue();
+            if (TryStep(ref walk, grid, dx: 1, dy: 0)) continue;
+            if (TryStep(ref walk, grid, dx: 0, dy: 1)) continue;
+            if (TryStep(ref walk, grid, dx: 0, dy: -1)) continue;
+            if (TryStep(ref walk, grid, dx: -1, dy: 0)) continue;
 
-            if (x == width - 1 && y == height - 1)
-                return true;
-
-            foreach (var (dx, dy) in Directions)
-            {
-                int nx = x + dx, ny = y + dy;
-                if (nx >= 0 && nx < width && ny >= 0 && ny < height
-                    && rows[ny][nx] == '.' && !visited[nx, ny])
-                {
-                    visited[nx, ny] = true;
-                    queue.Enqueue((nx, ny));
-                }
-            }
+            grid.MarkDeadEnd(walk.Position);
+            walk.Backtrack();
         }
-        return false;
+
+        return walk.Position == grid.Exit;
+    }
+
+    private static bool TryStep(ref WalkState walk, MazeGrid grid, int dx, int dy)
+    {
+        var candidate = new GridPoint(walk.Position.Col + dx, walk.Position.Row + dy);
+
+        if (!grid.IsOpen(candidate)) return false;
+        if (walk.AlreadyVisited(candidate)) return false;
+
+        walk.MoveTo(candidate);
+        return true;
     }
 }
