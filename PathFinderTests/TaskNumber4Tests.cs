@@ -1,62 +1,25 @@
+using System.Drawing;
 using TaskNumber4;
 
 namespace PathFinderTests;
 
 public class TaskNumber4Tests
 {
-    [Fact]
-    public void PathFinder_ReturnsOrigin_WhenCommandsAreEmpty()
+    [Theory]
+    [InlineData("r5L2l4", 4, 3)]
+    [InlineData("r5L2l4", 0, 0)]
+    [InlineData("10r5r0", -10, 5)]
+    [InlineData("10r5r0", 0, 0)]
+    [InlineData("10", 0, 10)]
+    [InlineData("R10", 10, 0)]
+    [InlineData("L10", -10, 0)]
+    [InlineData("r10", 10, 10)]
+    [InlineData("l10", -10, 10)]
+    [InlineData("RRRR5", 0, 5)]
+    [InlineData("10R10L10", 10, 20)] // North 10 → (0,10), turn R → East, East 10 → (10,10), turn L → North, North 10 → (10,20)
+    [InlineData("RR3", 0, -3)] // RR = South, move 3 → (0,-3)
+    public void GivenCommands_ResultingCoordinates_AreTheExpected(string commands, int expectedX, int expectedY)
     {
-        Assert.Equal((0, 0), Finder.PathFinder(""));
-    }
-
-    [Fact]
-    public void PathFinder_MovesNorth_WhenOnlyStepsGiven()
-    {
-        Assert.Equal((0, 10), Finder.PathFinder("10"));
-    }
-
-    [Fact]
-    public void PathFinder_MovesEast_AfterTurningRight90()
-    {
-        Assert.Equal((10, 0), Finder.PathFinder("R10"));
-    }
-
-    [Fact]
-    public void PathFinder_MovesWest_AfterTurningLeft90()
-    {
-        Assert.Equal((-10, 0), Finder.PathFinder("L10"));
-    }
-
-    [Fact]
-    public void PathFinder_MovesNorthEast_AfterTurningRight45()
-    {
-        Assert.Equal((10, 10), Finder.PathFinder("r10"));
-    }
-
-    [Fact]
-    public void PathFinder_MovesNorthWest_AfterTurningLeft45()
-    {
-        Assert.Equal((-10, 10), Finder.PathFinder("l10"));
-    }
-
-    [Fact]
-    public void PathFinder_ReturnsToNorth_AfterFourRightTurns()
-    {
-        Assert.Equal((0, 5), Finder.PathFinder("RRRR5"));
-    }
-
-    [Fact]
-    public void PathFinder_CombinesMultipleMovesAndTurns()
-    {
-        // North 10 → (0,10), turn R → East, East 10 → (10,10), turn L → North, North 10 → (10,20)
-        Assert.Equal((10, 20), Finder.PathFinder("10R10L10"));
-    }
-
-    [Fact]
-    public void PathFinder_HandlesMixedTurnsBeforeMoving()
-    {
-        // RR = South, move 3 → (0,-3)
-        Assert.Equal((0, -3), Finder.PathFinder("RR3"));
+        Assert.Equal(new Point(expectedX, expectedY), Finder.iAmHere(commands));
     }
 }

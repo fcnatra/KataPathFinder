@@ -1,11 +1,13 @@
+using System.Drawing;
+
 namespace TaskNumber4;
 
 public class Finder
 {
-	public static (int X, int Y) PathFinder(string commands)
+	public static Point iAmHere(string path)
 	{
 		var navigator = new Navigator();
-		foreach (var command in CommandParser.Parse(commands))
+		foreach (var command in CommandParser.Parse(path))
 			navigator.Apply(command);
 		return navigator.Position;
 	}

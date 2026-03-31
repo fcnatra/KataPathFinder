@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace TaskNumber4;
 
 public class Navigator
@@ -35,5 +37,5 @@ public class Navigator
 		}
 	}
 
-	public (int X, int Y) Position => (_x, _y);
+	public Point Position => new Point(_x, _y);
 }
