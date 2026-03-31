@@ -5,6 +5,27 @@ namespace PathFinderTests;
 public class TaskNumber3Tests
 {
     [Fact]
+    public void PathFinder_ThrowsArgumentException_WhenMazeIsNull()
+    {
+        Assert.Throws<ArgumentException>(() => Finder.PathFinder(null!));
+    }
+
+    [Fact]
+    public void PathFinder_ThrowsArgumentException_WhenMazeIsEmpty()
+    {
+        Assert.Throws<ArgumentException>(() => Finder.PathFinder(string.Empty));
+    }
+
+    [Fact]
+    public void PathFinder_ThrowsArgumentException_WhenMazeIsNotSquare()
+    {
+        string maze = "012\n" +
+                      "34";
+
+        Assert.Throws<ArgumentException>(() => Finder.PathFinder(maze));
+    }
+
+    [Fact]
     public void PathFinder_ReturnsZero_WhenMazeHasSingleCell()
     {
         Assert.Equal(0, Finder.PathFinder("0"));

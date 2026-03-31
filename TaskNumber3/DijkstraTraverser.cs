@@ -6,10 +6,14 @@ public static class DijkstraTraverser
 
 	public static int FindMinimumClimb(int[][] grid)
 	{
-		int size = grid.Length;
-		int lastIndex = size - 1;
+		ValidateGrid(grid);
 
-		var costs = InitCosts(size);
+		int rowCount = grid.Length;
+		int colCount = grid[0].Length;
+		int lastRow = rowCount - 1;
+		int lastCol = colCount - 1;
+
+		var costs = InitCosts(rowCount, colCount);
 		costs[0, 0] = 0;
 
 		var queue = new PriorityQueue<(int Row, int Col), int>();
@@ -17,10 +21,14 @@ public static class DijkstraTraverser
 
 		while (queue.Count > 0)
 		{
-			var (row, col) = queue.Dequeue();
+			queue.TryDequeue(out var currentPoint, out int queuedCost);
+			var (row, col) = currentPoint;
 			int currentCost = costs[row, col];
 
-			if (row == lastIndex && col == lastIndex)
+			if (queuedCost > currentCost)
+				continue;
+
+			if (row == lastRow && col == lastCol)
 				return currentCost;
 
 			foreach (var (dRow, dCol) in Directions)
@@ -28,28 +36,60 @@ public static class DijkstraTraverser
 				int nRow = row + dRow;
 				int nCol = col + dCol;
 
-				if (nRow < 0 || nRow >= size || nCol < 0 || nCol >= size) continue;
+				if (!IsInsideLimits(nRow, nCol, rowCount, colCount))
+					continue;
 
-				int climbCost = Math.Abs(grid[row][col] - grid[nRow][nCol]);
-				int newCost = currentCost + climbCost;
-
-				if (newCost < costs[nRow, nCol])
-				{
-					costs[nRow, nCol] = newCost;
-					queue.Enqueue((nRow, nCol), newCost);
-				}
+				TryRelaxNeighbor(grid, costs, queue, row, col, nRow, nCol, currentCost);
 			}
 		}
 
 		return -1;
 	}
 
-	private static int[,] InitCosts(int size)
+	private static int[,] InitCosts(int rowCount, int colCount)
 	{
-		var costs = new int[size, size];
-		for (int row = 0; row < size; row++)
-			for (int col = 0; col < size; col++)
+		var costs = new int[rowCount, colCount];
+		for (int row = 0; row < rowCount; row++)
+			for (int col = 0; col < colCount; col++)
 				costs[row, col] = int.MaxValue;
 		return costs;
+	}
+
+	private static bool IsInsideLimits(int row, int col, int rowCount, int colCount)
+	{
+		return row >= 0 && row < rowCount && col >= 0 && col < colCount;
+	}
+
+	private static void TryRelaxNeighbor(
+		int[][] grid,
+		int[,] costs,
+		PriorityQueue<(int Row, int Col), int> queue,
+		int row,
+		int col,
+		int nRow,
+		int nCol,
+		int currentCost)
+	{
+		int climbCost = Math.Abs(grid[row][col] - grid[nRow][nCol]);
+		int newCost = currentCost + climbCost;
+
+		if (newCost >= costs[nRow, nCol])
+			return;
+
+		costs[nRow, nCol] = newCost;
+		queue.Enqueue((nRow, nCol), newCost);
+	}
+
+	private static void ValidateGrid(int[][] grid)
+	{
+		if (grid is null || grid.Length == 0 || grid[0].Length == 0)
+			throw new ArgumentException("Grid cannot be null or empty.", nameof(grid));
+
+		int expectedLength = grid.Length;
+		for (int row = 0; row < grid.Length; row++)
+		{
+			if (grid[row] is null || grid[row].Length != expectedLength)
+				throw new ArgumentException("Grid must be a non-empty square matrix.", nameof(grid));
+		}
 	}
 }

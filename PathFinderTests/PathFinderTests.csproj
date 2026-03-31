@@ -22,6 +22,7 @@
     <ProjectReference Include="..\TaskNumber1\TaskNumber1.csproj" />
     <ProjectReference Include="..\TaskNumber2\TaskNumber2.csproj" />
     <ProjectReference Include="..\TaskNumber3\TaskNumber3.csproj" />
+    <ProjectReference Include="..\TaskNumber4\TaskNumber4.csproj" />
   </ItemGroup>
 
 </Project>
