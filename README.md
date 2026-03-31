@@ -46,7 +46,24 @@ Location altitude is defined as an integer number (0-9).
 
 Type of practice: **PUZZLES**
 
-Hey, Path Finder, where are you?
+You must track the Path Finder position on an infinite 2D grid.
+
+The starting position is **(0, 0)** and the initial facing direction is **North**.
+
+Given a command string, process it from left to right:
+- **R**: turn right 90 degrees
+- **L**: turn left 90 degrees
+- **r**: turn right 45 degrees
+- **l**: turn left 45 degrees
+- A number (one or more digits): move forward that many steps in the current direction
+
+Return the final coordinates after applying all commands.
+
+Notes:
+- The grid supports negative coordinates.
+- An empty command string means no movement.
+- Rotations can happen multiple times before a movement command appears.
+
 
 ### Task #5 There's someone here
 
