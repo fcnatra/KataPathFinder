@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.2.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11626.88 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNumber1", "TaskNumber1\TaskNumber1.csproj", "{8987F0B4-CB58-D50B-7ACB-A69D3EA6EE0D}"
 EndProject
@@ -12,6 +12,22 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNumber3", "TaskNumber3\TaskNumber3.csproj", "{B57E9C1A-2609-45CF-B90D-E263BE17AC5A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskNumber4", "TaskNumber4\TaskNumber4.csproj", "{611CCD2D-DC57-4229-A25C-C0A966486865}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{6A3C9649-435A-4C14-8467-A0B01C35FA1F}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".claude", ".claude", "{1A305709-C8FA-46DA-89F6-9A8AC3E1EF00}"
+	ProjectSection(SolutionItems) = preProject
+		.claude\settings.local.json = .claude\settings.local.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{3407D386-DF33-43A5-A71E-B531B1738A29}"
+	ProjectSection(SolutionItems) = preProject
+		.github\copilot-instructions.md = .github\copilot-instructions.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +102,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1A305709-C8FA-46DA-89F6-9A8AC3E1EF00} = {6A3C9649-435A-4C14-8467-A0B01C35FA1F}
+		{3407D386-DF33-43A5-A71E-B531B1738A29} = {6A3C9649-435A-4C14-8467-A0B01C35FA1F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AAD69602-1DB0-4DCE-BD33-0BF23ED80B2E}
