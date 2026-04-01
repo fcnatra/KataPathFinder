@@ -1,20 +1,35 @@
+using System.Drawing;
+
 namespace TaskNumber5;
 
-public static class GameSearch
+public class GameSearch
 {
     private static readonly (int dRow, int dCol)[] Directions = [(-1, 0), (0, 1), (1, 0), (0, -1)];
     private const char Wall = 'W';
+    private readonly char[][] _cells;
+    private readonly int _size;
+    private readonly Dictionary<Point, int[]> _distanceCache;
 
-    public static bool CanEscape(char[][] cells)
+    public GameSearch(char[][] cells)
     {
-        int last = cells.Length - 1;
-        var start = (Row: 0, Col: 0);
-        var exit = (Row: last, Col: last);
+        _cells = cells;
+        _size = cells.Length;
+        _distanceCache = new Dictionary<Point, int[]>();
+    }
+
+    public bool CanEscape()
+    {
+        int last = _size - 1;
+        var start = new Point(0, 0);
+        var exit = new Point(last, last);
 
         if (start == exit) return true;
 
-        var distances = BuildDistances(cells);
-        var initial = new GameState(start, exit);
+        return Search(new GameState(start, exit), exit);
+    }
+
+    private bool Search(GameState initial, Point exit)
+    {
         var queue = new Queue<GameState>();
         var visited = new HashSet<GameState>();
 
@@ -25,7 +40,7 @@ public static class GameSearch
         {
             var state = queue.Dequeue();
 
-            foreach (var next in GetNextStates(state, cells, distances, exit))
+            foreach (var next in GetNextStates(state))
             {
                 if (next.Player == exit) return true;
                 if (visited.Contains(next)) continue;
@@ -37,17 +52,15 @@ public static class GameSearch
         return false;
     }
 
-    private static IEnumerable<GameState> GetNextStates(
-        GameState state, char[][] cells, Func<(int Row, int Col), int[]> distances, (int Row, int Col) exit)
+    private IEnumerable<GameState> GetNextStates(GameState state)
     {
         foreach (var (dRow, dCol) in Directions)
         {
-            var newPlayer = (Row: state.Player.Row + dRow, Col: state.Player.Col + dCol);
+            var newPlayer = new Point(state.Player.X + dCol, state.Player.Y + dRow);
 
-            if (!IsOpen(cells, newPlayer)) continue;
-            if (newPlayer == state.Monster) continue;
+            if (!IsValidPlayerMove(newPlayer, state.Monster)) continue;
 
-            var newMonster = MoveMonsterToward(state.Monster, newPlayer, cells, distances);
+            var newMonster = MoveMonsterToward(state.Monster, newPlayer);
 
             if (newPlayer == newMonster) continue;
 
@@ -55,20 +68,22 @@ public static class GameSearch
         }
     }
 
-    private static (int Row, int Col) MoveMonsterToward(
-        (int Row, int Col) monster, (int Row, int Col) target,
-        char[][] cells, Func<(int Row, int Col), int[]> distances)
+    private bool IsValidPlayerMove(Point newPlayer, Point monster) =>
+        IsOpen(newPlayer) && newPlayer != monster;
+
+    private Point MoveMonsterToward(Point monster, Point target)
     {
+        var targetDistances = GetDistancesFrom(target);
         var best = monster;
-        int bestDist = distances(target)[monster.Row * cells.Length + monster.Col];
+        int bestDist = targetDistances[GetIndex(monster.Y, monster.X)];
 
         foreach (var (dRow, dCol) in Directions)
         {
-            var candidate = (Row: monster.Row + dRow, Col: monster.Col + dCol);
+            var candidate = new Point(monster.X + dCol, monster.Y + dRow);
 
-            if (!IsOpen(cells, candidate)) continue;
+            if (!IsOpen(candidate)) continue;
 
-            int dist = distances(target)[candidate.Row * cells.Length + candidate.Col];
+            int dist = targetDistances[GetIndex(candidate.Y, candidate.X)];
 
             if (dist < bestDist)
             {
@@ -80,49 +95,43 @@ public static class GameSearch
         return best;
     }
 
-    // Use lazy evaluation with a cache to avoid O(n^4) upfront computation
-    private static Func<(int Row, int Col), int[]> BuildDistances(char[][] cells)
+    // Uses lazy evaluation with cache to avoid O(n^4) upfront computation.
+    private int[] GetDistancesFrom(Point source)
     {
-        int size = cells.Length;
-        var cache = new Dictionary<(int Row, int Col), int[]>();
-
-        return source =>
+        if (!_distanceCache.TryGetValue(source, out var distances))
         {
-            if (!cache.TryGetValue(source, out var dist))
-            {
-                dist = BfsFrom(source, cells);
-                cache[source] = dist;
-            }
-            return dist;
-        };
+            distances = BfsFrom(source);
+            _distanceCache[source] = distances;
+        }
+
+        return distances;
     }
 
-    private static int GetIndex(int row, int col, int size)
+    private int GetIndex(int row, int col)
     {
         // Linearizes 2D coordinates into a flat array index
-        return row * size + col;
+        return row * _size + col;
     }
 
-    private static int[] BfsFrom((int Row, int Col) source, char[][] cells)
+    private int[] BfsFrom(Point source)
     {
-        int size = cells.Length;
-        var dist = new int[size * size];
+        var dist = new int[_size * _size];
         Array.Fill(dist, int.MaxValue);
-        dist[GetIndex(source.Row, source.Col, size)] = 0;
+        dist[GetIndex(source.Y, source.X)] = 0;
 
-        var queue = new Queue<(int Row, int Col)>();
+        var queue = new Queue<Point>();
         queue.Enqueue(source);
 
         while (queue.Count > 0)
         {
-            var (row, col) = queue.Dequeue();
-            int current = dist[GetIndex(row, col, size)];
+            var currentPoint = queue.Dequeue();
+            int current = dist[GetIndex(currentPoint.Y, currentPoint.X)];
 
             foreach (var (dRow, dCol) in Directions)
             {
-                var next = (Row: row + dRow, Col: col + dCol);
-                if (!IsOpen(cells, next)) continue;
-                int idx = GetIndex(next.Row, next.Col, size);
+                var next = new Point(currentPoint.X + dCol, currentPoint.Y + dRow);
+                if (!IsOpen(next)) continue;
+                int idx = GetIndex(next.Y, next.X);
                 if (dist[idx] != int.MaxValue) continue;
                 dist[idx] = current + 1;
                 queue.Enqueue(next);
@@ -132,10 +141,10 @@ public static class GameSearch
         return dist;
     }
 
-    private static bool IsOpen(char[][] cells, (int Row, int Col) pos)
+    private bool IsOpen(Point pos)
     {
-        if (pos.Row < 0 || pos.Row >= cells.Length) return false;
-        if (pos.Col < 0 || pos.Col >= cells[pos.Row].Length) return false;
-        return cells[pos.Row][pos.Col] != Wall;
+        if (pos.Y < 0 || pos.Y >= _cells.Length) return false;
+        if (pos.X < 0 || pos.X >= _cells[pos.Y].Length) return false;
+        return _cells[pos.Y][pos.X] != Wall;
     }
 }

@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace TaskNumber5;
 
-public record GameState((int Row, int Col) Player, (int Row, int Col) Monster);
+public record GameState(Point Player, Point Monster);

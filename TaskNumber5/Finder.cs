@@ -5,6 +5,7 @@ public class Finder
     public static bool PathFinder(string maze)
     {
         var cells = MazeParser.Parse(maze);
-        return GameSearch.CanEscape(cells);
+        var gameSearch = new GameSearch(cells);
+        return gameSearch.CanEscape();
     }
 }
